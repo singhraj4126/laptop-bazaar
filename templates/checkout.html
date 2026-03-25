@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Laptop Bazaar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0f172a; color: white; font-family: 'Poppins', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        input, textarea { 
+            background: rgba(255, 255, 255, 0.05) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            color: white !important; 
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus { border-color: #f97316 !important; outline: none; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); }
+    </style>
+</head>
+<body>
+
+{% include 'includes/navbar_flash.html' %}
+
+<div class="container mx-auto px-4 py-12 mt-10">
+    <h1 class="text-4xl font-black mb-10 uppercase tracking-tighter">Shipping <span class="text-orange-500">Details</span></h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2">
+            <form action="/place_order" method="POST" class="glass p-8 rounded-[2.5rem] space-y-6 shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2 font-bold uppercase tracking-widest text-[10px]">Full Name</label>
+                        <input type="text" name="full_name" value="{{ user.full_name or '' }}" required class="w-full p-4 rounded-2xl" placeholder="e.g. Robin Singh">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2 font-bold uppercase tracking-widest text-[10px]">Phone Number</label>
+                        <input type="text" name="phone" value="{{ user.phone or '' }}" required class="w-full p-4 rounded-2xl" placeholder="+91 XXXXX XXXXX">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2 font-bold uppercase tracking-widest text-[10px]">Complete Address</label>
+                    <textarea name="address" required rows="3" class="w-full p-4 rounded-2xl" placeholder="House No, Street, Landmark...">{{ user.address or '' }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2 font-bold uppercase tracking-widest text-[10px]">City</label>
+                        <input type="text" name="city" value="{{ user.city or '' }}" required class="w-full p-4 rounded-2xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2 font-bold uppercase tracking-widest text-[10px]">Pincode</label>
+                        <input type="text" name="pincode" value="{{ user.pincode or '' }}" required class="w-full p-4 rounded-2xl">
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center gap-4">
+                    <div class="bg-orange-500 p-3 rounded-xl">
+                        <i class="fas fa-truck text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-orange-200 font-bold uppercase">Payment Method</p>
+                        <p class="text-white font-black text-lg">Cash on Delivery (COD)</p>
+                    </div>
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 py-5 rounded-2xl font-black text-xl shadow-xl shadow-orange-900/20 transition-all transform hover:scale-[1.01] active:scale-95">
+                        CONFIRM & PLACE ORDER
+                    </button>
+                    <p class="text-center text-gray-500 text-xs mt-4">By clicking, you agree to our Terms of Service</p>
+                </div>
+            </form>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="glass p-8 rounded-[2.5rem] sticky top-28 shadow-2xl border-orange-500/10">
+                <h2 class="text-xl font-black mb-6 border-b border-white/10 pb-4 text-orange-500 uppercase tracking-tighter">Order Summary</h2>
+                
+                <div class="border-t border-white/10 pt-4 space-y-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400 text-sm">Delivery Charge</span>
+                        <span class="text-green-400 text-sm font-bold uppercase">FREE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400 text-sm">Handling Fee</span>
+                        <span class="text-white text-sm font-bold italic">₹0.00</span>
+                    </div>
+                    
+                    <div class="pt-4 mt-4 border-t border-white/10">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Grand Total</p>
+                                <p class="text-3xl font-black text-white">Total</p>
+                            </div>
+                            <span class="text-4xl font-black text-orange-500 tracking-tighter">₹{{ total_price }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-white/5">
+                    <div class="flex items-center gap-3 text-gray-400 text-xs">
+                        <i class="fas fa-shield-alt text-orange-500"></i>
+                        <span>Secure Checkout with Laptop Bazaar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

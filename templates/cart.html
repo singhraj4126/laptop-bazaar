@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Bazaar | Premium Tech Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root { --amazon-blue: #131921; --amazon-light: #232f3e; --amazon-yellow: #febd69; }
+        body { background-color: #f1f3f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* .navbar { background-color: var(--amazon-blue); padding: 10px 0; }
+        .nav-link { color: white !important; font-weight: 500; } */
+        .search-container { max-width: 600px; width: 100%; }
+        .search-input { border-radius: 4px 0 0 4px !important; border: none; height: 40px; }
+        .search-btn { background-color: var(--amazon-yellow); border: none; border-radius: 0 4px 4px 0 !important; height: 40px; padding: 0 15px; }
+        .offcanvas { background-color: white; width: 280px !important; }
+        .offcanvas-header { background-color: var(--amazon-light); color: white; }
+        .sidebar-link { padding: 12px 20px; display: block; color: #333; text-decoration: none; border-bottom: 1px solid #eee; transition: 0.3s; }
+        .sidebar-link:hover { background-color: #f1f3f6; color: var(--amazon-blue); }
+        .sidebar-link i { width: 25px; color: #666; }
+        /* Cart Badge Fix */
+        .cart-badge { font-size: 0.7rem; top: 0px !important; right: -5px !important; }
+        /* Notification Specific CSS */
+        .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        /* Cart page ke style block mein ye daal dein */
+        .fa-shopping-cart, .fa-bars, .fa-search { color: white !important; }
+a { text-decoration: none !important; }
+    </style>
+</head>
+<script>
+    // Ye code har page (index, cart, login) ke bottom mein hona chahiye
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+
+    if (btn && menu) {
+        btn.onclick = function() {
+            menu.classList.toggle("hidden");
+        }
+    }
+</script>
+<body>
+
+
+{% include 'includes/navbar_flash.html' %}
+
+<div class="p-4 md:p-10 bg-slate-900 min-h-screen text-white">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-black mb-10">
+            SHOPPING <span class="text-orange-500">CART</span>
+        </h1>
+
+        {% if items %}
+        <div class="space-y-4">
+            {% for item in items %}
+            <div class="glass p-6 rounded-[2rem] flex items-center justify-between">
+                <div class="flex items-center gap-6">
+    {% if item.image_url and item.image_url.startswith('http') %}
+        <img src="{{ item.image_url }}" class="w-20 h-20 object-contain bg-slate-800 rounded-xl p-2">
+    {% elif item.image_url %}
+        <img src="{{ url_for('static', filename=item.image_url) }}" class="w-20 h-20 object-contain bg-slate-800 rounded-xl p-2">
+    {% else %}
+        <img src="{{ url_for('static', filename='uploads/products/default.jpg') }}" class="w-20 h-20 object-contain bg-slate-800 rounded-xl p-2">
+    {% endif %}
+    
+    <div>
+                        <h3 class="font-bold text-lg">{{ item.name }}</h3>
+                        <p class="text-orange-500 font-bold">₹{{ item.price }}</p>
+                    </div>
+                </div>
+               <a href="{{ url_for('remove_from_cart', cart_id=item.id) }}" class="text-red-500">
+   <i class="fas fa-trash"></i> Remove
+</a>
+            </div>
+            {% endfor %}
+
+            <div class="mt-10 border-t border-white/10 pt-6 flex justify-between items-center">
+                <span class="text-2xl font-bold">Total: ₹{{ total }}</span>
+               <a href="/checkout" class="bg-orange-600 px-10 py-4 rounded-full font-bold shadow-lg shadow-orange-900/40 decoration-none text-white text-center inline-block">
+    CHECKOUT NOW
+</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-20">
+            <i class="fa fa-shopping-basket text-6xl text-gray-700 mb-4"></i>
+            <p class="text-xl text-gray-400">Your cart is empty!</p>
+            <a href="/" class="text-orange-500 underline mt-4 inline-block">Go Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
+
+
+
+

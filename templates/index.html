@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <title>Laptop Bazaar | Pro Store</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #0f172a; color: white; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        .gradient-text { 
+            background: linear-gradient(90deg, #60a5fa, #f97316); 
+            background-clip: text; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            color: transparent; 
+        }
+        
+        /* Professional Responsive Grid */
+        .product-grid { display: grid; gap: 1rem; }
+        @media (max-width: 768px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .product-card { padding: 0.75rem !important; border-radius: 20px !important; }
+            .product-card img { width: 80px !important; }
+            .product-card h3 { font-size: 0.875rem !important; }
+        }
+        @media (min-width: 769px) {
+            .product-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        }
+        @media (min-width: 1024px) {
+            .product-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .product-card { cursor: pointer; transition: all 0.4s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .product-card:hover { border-color: #f97316; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(249, 115, 22, 0.1); }
+        
+        #mobile-drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .swiper-pagination-bullet-active { background: #f97316 !important; }
+    </style>
+</head>
+<body>
+
+    {% include 'includes/navbar_flash.html' %}
+
+    <!-- <nav class="glass sticky top-0 z-[100] px-4 md:px-8 py-3 flex justify-between items-center shadow-2xl">
+        <div class="flex items-center gap-4">
+            <button id="drawer-open" class="text-white text-xl p-2"><i class="fa fa-bars"></i></button>
+            <a href="/" class="text-xl md:text-2xl font-bold tracking-tighter">
+                LAPTOP<span class="text-orange-500 font-black">BAZAAR</span>
+            </a>
+        </div>
+
+        <div class="hidden md:flex flex-1 max-w-xl mx-8 items-center group">
+            <form action="/search" method="GET" class="flex w-full">
+                <input type="text" name="query" placeholder="Search brands, gaming gear..." class="w-full bg-slate-800 text-sm rounded-l-lg py-2.5 px-10 outline-none focus:ring-1 focus:ring-orange-500">
+                <button type="submit" class="bg-orange-500 px-6 rounded-r-lg hover:bg-orange-600 transition">
+                    <i class="fa fa-search text-white"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="flex items-center gap-4">
+            {% if session['user_name'] %}
+                <a href="/cart" class="relative p-2 bg-slate-800 rounded-full hover:bg-orange-500 transition">
+                    <i class="fa fa-shopping-cart"></i>
+                   <span class="absolute -top-1 -right-1 bg-orange-600 text-[10px] px-1.5 rounded-full font-bold">
+    {{ cart_count }}
+</span>
+                </a>
+                <span class="hidden lg:inline text-blue-400 font-bold italic text-sm">Hi, {{ session['user_name'] }}</span>
+            {% else %}
+                <a href="/login" class="text-sm font-medium hover:text-orange-500">Login</a>
+                <a href="/register" class="bg-orange-600 px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-orange-900/40">Join</a>
+            {% endif %}
+        </div>
+    </nav> -->
+
+    <div class="md:hidden p-4 bg-slate-900/50 border-b border-white/5">
+        <form action="/search" method="GET" class="flex items-center">
+            <input type="text" name="query" placeholder="Search for gear..." class="flex-1 bg-slate-800 text-sm rounded-l-xl py-3 px-4 outline-none">
+            <button type="submit" class="bg-orange-500 px-5 py-3 rounded-r-xl">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- <div id="mobile-drawer" class="fixed inset-y-0 left-0 w-80 bg-[#0f172a] z-[110] transform -translate-x-full shadow-2xl overflow-y-auto border-r border-white/10">
+        <div class="bg-gradient-to-r from-blue-600 to-orange-600 p-6 flex items-center gap-4 text-white">
+            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa fa-user"></i></div>
+            <div>
+                {% if session['user_name'] %} <h2 class="font-bold">Hi, {{ session['user_name'] }}</h2> {% else %} <a href="/login" class="font-bold">Sign In / Join</a> {% endif %}
+            </div>
+            <button id="drawer-close" class="ml-auto text-2xl opacity-50">&times;</button>
+        </div>
+        <div class="p-4 space-y-6">
+            <div>
+                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-2">Trending</h3>
+                <div class="flex flex-col text-sm">
+                    <a href="/search?query=bestseller" class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3"><i class="fa fa-fire text-orange-500"></i> Bestsellers</a>
+                    <a href="/search?query=new" class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3"><i class="fa fa-rocket text-blue-500"></i> New Releases</a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-2">Categories</h3>
+                <div class="flex flex-col text-sm">
+                    <a href="/search?query=Gaming" class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3"><i class="fa fa-gamepad text-purple-500"></i> Gaming Laptops</a>
+                    <a href="/search?query=Apple" class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3"><i class="fab fa-apple"></i> MacBooks</a>
+                    <a href="/search?query=Work" class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3"><i class="fa fa-briefcase text-yellow-500"></i> Business</a>
+                </div>
+            </div>
+            <hr class="border-white/5">
+            <div class="flex flex-col text-sm opacity-70">
+                <a href="/cart" class="p-3 hover:bg-white/5 rounded-xl italic">Customer Service</a>
+                {% if session['user_name'] %}<a href="/logout" class="p-3 text-red-400">Sign Out</a>{% endif %}
+            </div>
+        </div>
+    </div> -->
+
+    <header class="h-[350px] md:h-[550px] overflow-hidden">
+        <div class="swiper mySwiper h-full">
+          <div class="swiper-wrapper">
+    <div class="swiper-slide relative">
+        <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=2000" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/50 flex items-center px-10">
+            <h1 class="text-4xl md:text-7xl font-black uppercase">Power <span class="gradient-text">Redefined</span></h1>
+        </div>
+    </div>
+    <div class="swiper-slide relative">
+        <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=2000" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/50 flex items-center px-10">
+            <h1 class="text-4xl md:text-7xl font-black uppercase">Pro <span class="gradient-text">Gaming</span></h1>
+        </div>
+    </div>
+    <div class="swiper-slide relative">
+        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=2000" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/50 flex items-center px-10">
+            <h1 class="text-4xl md:text-7xl font-black uppercase">Apple <span class="gradient-text">MacBook</span></h1>
+        </div>
+    </div>
+    <div class="swiper-slide relative">
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2000" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/50 flex items-center px-10">
+            <h1 class="text-4xl md:text-7xl font-black uppercase">Work <span class="gradient-text">Stations</span></h1>
+        </div>
+    </div>
+    <div class="swiper-slide relative">
+        <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=2000" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black/50 flex items-center px-10">
+            <h1 class="text-4xl md:text-7xl font-black uppercase">Ultra <span class="gradient-text">Slim</span></h1>
+        </div>
+    </div>
+</div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </header>
+
+  <main class="container mx-auto px-4 md:px-10 py-16">
+    <div class="flex items-center justify-between mb-12">
+        <h2 class="text-2xl md:text-4xl font-bold uppercase tracking-tighter">The <span class="text-orange-500 italic">Vault</span></h2>
+        <div class="h-1 flex-1 mx-8 bg-gradient-to-r from-orange-500/50 to-transparent rounded-full hidden md:block"></div>
+    </div>
+    
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-10">
+    {% for laptop in laptops %}
+    <div onclick="window.location.href='/product/{{ laptop.id }}'" 
+         class="glass bg-slate-900/60 p-4 md:p-6 flex flex-col justify-between group cursor-pointer border border-white/5 rounded-[2.5rem] hover:bg-slate-800/80 hover:border-orange-500/30 hover:-translate-y-2 transition-all duration-300 shadow-xl hover:shadow-orange-950/40">
+        
+        <div class="relative overflow-hidden">
+           <div class="h-32 md:h-48 bg-slate-800/40 rounded-[2rem] flex items-center justify-center mb-6 border border-white/5 overflow-hidden">
+    
+    {% if laptop.image_url and laptop.image_url.startswith('http') %}
+        <img src="{{ laptop.image_url }}" class="w-24 md:w-40 object-contain">
+    {% elif laptop.image_url %}
+        <img src="{{ url_for('static', filename=laptop.image_url) }}" class="w-24 md:w-40 object-contain">
+    {% else %}
+        <img src="{{ url_for('static', filename='uploads/products/default.jpg') }}" class="w-24 md:w-40 object-contain">
+    {% endif %}
+
+</div>
+            
+            <span class="text-[9px] md:text-[11px] text-orange-400 font-black tracking-[0.2em] uppercase">{{ laptop.brand }}</span>
+            <h3 class="text-sm md:text-xl font-bold truncate mt-1 text-white">{{ laptop.name }}</h3>
+            
+            <p class="hidden md:block text-gray-400 text-xs mt-3 line-clamp-2 italic font-light">{{ laptop.specs }}</p>
+        </div>
+        
+        <div class="mt-6 flex justify-between items-center gap-2">
+            <span class="text-sm md:text-2xl font-black text-white italic">₹{{ laptop.price }}</span>
+            
+            <div onclick="event.stopPropagation(); window.location.href='/product/{{ laptop.id }}'"
+                 class="w-9 h-9 md:w-12 md:h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 
+                        hover:bg-orange-500 hover:shadow-orange-500/50 hover:scale-110 active:scale-95">
+                <i class="fa fa-arrow-right text-xs md:text-base text-white"></i>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</main>
+
+    <footer class="p-10 text-center border-t border-white/5 opacity-40 text-[10px] tracking-widest">
+        <p>© 2026 LAPTOP BAZAAR | AKASH & ROBIN</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Restored & Smoother Swiper
+        new Swiper(".mySwiper", {
+            loop: true,
+            effect: 'fade',
+            autoplay: { delay: 4000, disableOnInteraction: false },
+            pagination: { el: ".swiper-pagination", clickable: true }
+        });
+
+        // Sidebar Drawer Logic
+        const openBtn = document.getElementById('drawer-open');
+        const closeBtn = document.getElementById('drawer-close');
+        const drawer = document.getElementById('mobile-drawer');
+
+        openBtn.addEventListener('click', () => drawer.classList.remove('-translate-x-full'));
+        closeBtn.addEventListener('click', () => drawer.classList.add('-translate-x-full'));
+    </script>
+</body>
+</html>
+
+
+

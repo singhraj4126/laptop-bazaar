@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>{{ laptop.name }} | Details</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #0f172a; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        /* Custom animation for buttons */
+        .btn-animate { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-animate:active { transform: scale(0.95); }
+    </style>
+</head>
+<script>
+    // Ye code har page (index, cart, login) ke bottom mein hona chahiye
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+
+    if (btn && menu) {
+        btn.onclick = function() {
+            menu.classList.toggle("hidden");
+        }
+    }
+</script>
+<body class="p-6 md:p-12">
+
+
+    {% include 'includes/navbar_flash.html' %}
+    
+    <a href="/" class="inline-flex items-center text-gray-400 hover:text-orange-500 transition mb-10 group">
+        <i class="fa fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Back to Inventory
+    </a>
+
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            
+           <div class="glass rounded-[50px] p-10 flex items-center justify-center sticky top-24 border-white/5 shadow-2xl">
+    {% if laptop.image_url and laptop.image_url.startswith('http') %}
+        <img src="{{ laptop.image_url }}" class="w-full max-w-md hover:scale-105 transition duration-500" alt="{{ laptop.name }}">
+    {% else %}
+        <img src="{{ url_for('static', filename=laptop.image_url) }}" class="w-full max-w-md hover:scale-105 transition duration-500" alt="{{ laptop.name }}">
+    {% endif %}
+</div>
+
+            <div class="space-y-8">
+                <div>
+                    <span class="text-orange-500 font-bold tracking-[0.3em] uppercase text-xs">{{ laptop.brand }}</span>
+                    <h1 class="text-5xl md:text-6xl font-black mt-2 leading-tight tracking-tighter">{{ laptop.name }}</h1>
+                    <div class="flex items-center mt-4 space-x-4">
+                        <div class="flex text-orange-400 text-sm">
+                            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm font-medium">(120+ Verified Reviews)</span>
+                    </div>
+                </div>
+
+                <div class="flex items-baseline space-x-4">
+                    <span class="text-5xl font-black text-white italic">₹{{ laptop.price }}</span>
+                    {% if laptop.discount > 0 %}
+                    <span class="text-2xl text-gray-500 line-through decoration-orange-500/50">₹{{ (laptop.price * 1.1)|int }}</span>
+                    <span class="bg-orange-500/20 text-orange-400 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-orange-500/30">
+                        {{ laptop.discount }}% OFF
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass p-5 rounded-[2rem] border-white/5">
+                        <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest mb-1">Processor</p>
+                        <p class="font-bold text-sm">High Performance Chip</p>
+                    </div>
+                    <div class="glass p-5 rounded-[2rem] border-white/5">
+                        <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest mb-1">Display</p>
+                        <p class="font-bold text-sm">Ultra HD Visuals</p>
+                    </div>
+                </div>
+
+                <div class="prose prose-invert">
+                    <h3 class="text-lg font-bold text-blue-400 uppercase tracking-widest mb-3">Technical Specifications</h3>
+                    <p class="text-gray-400 leading-relaxed italic font-light">
+                        {{ laptop.specs }}
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <a href="/add_to_cart/{{ laptop.id }}?action=buy" class="flex-1">
+                        <button class="w-full bg-white text-black py-5 rounded-full font-black text-xl btn-animate shadow-xl hover:bg-gray-200 uppercase tracking-tighter">
+                            <i class="fa fa-bolt mr-2 text-orange-600"></i> BUY IT NOW
+                        </button>
+                    </a>
+
+                    <a href="/add_to_cart/{{ laptop.id }}" class="flex-1">
+                        <button class="w-full bg-orange-600 hover:bg-orange-700 text-white py-5 rounded-full font-black text-xl btn-animate shadow-lg shadow-orange-900/40 uppercase tracking-tighter">
+                            <i class="fa fa-shopping-cart mr-2"></i> ADD TO CART
+                        </button>
+                    </a>
+                </div>
+
+                <div class="pt-8 flex justify-between border-t border-white/5">
+                    <div class="text-center group">
+                        <i class="fa fa-shield-alt text-blue-500 text-2xl mb-2 group-hover:scale-110 transition"></i>
+                        <p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">1 Year Warranty</p>
+                    </div>
+                    <div class="text-center group">
+                        <i class="fa fa-undo text-green-500 text-2xl mb-2 group-hover:scale-110 transition"></i>
+                        <p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">7 Days Return</p>
+                    </div>
+                    <div class="text-center group">
+                        <i class="fa fa-truck text-orange-500 text-2xl mb-2 group-hover:scale-110 transition"></i>
+                        <p class="text-[9px] uppercase text-gray-500 font-bold tracking-widest">Free Delivery</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if related %}
+        <div class="mt-32">
+            <h2 class="text-3xl font-black mb-10 tracking-tighter">SIMILAR FROM <span class="text-orange-500 italic">{{ laptop.brand }}</span></h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for item in related %}
+                <a href="/product/{{ item.id }}" class="glass p-5 rounded-[2.5rem] block group hover:border-orange-500/50 transition-all duration-300">
+                    <div class="h-32 bg-slate-800/40 rounded-[2rem] mb-4 flex items-center justify-center border border-white/5 overflow-hidden">
+    {% if item.image_url and item.image_url.startswith('http') %}
+        <img src="{{ item.image_url }}" class="w-20 group-hover:scale-110 transition duration-500" alt="">
+    {% else %}
+        <img src="{{ url_for('static', filename=item.image_url) }}" class="w-20 group-hover:scale-110 transition duration-500" alt="">
+    {% endif %}
+</div>
+                    <h4 class="font-bold truncate text-sm text-white">{{ item.name }}</h4>
+                    <p class="text-orange-500 font-black mt-1 italic">₹{{ item.price }}</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer class="mt-20 py-10 text-center border-t border-white/5 opacity-30 text-[10px] font-bold tracking-[0.5em] uppercase">
+        &copy; 2026 Laptop Bazaar | Next-Gen E-commerce
+    </footer>
+
+</body>
+</html>
+
+
+

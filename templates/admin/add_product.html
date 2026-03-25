@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Laptop | Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b0f1a] text-white font-sans">
+
+<div class="container mx-auto px-6 py-12 max-w-2xl">
+    <div class="flex items-center gap-4 mb-8">
+        <a href="/admin/dashboard" class="text-gray-500 hover:text-orange-500 transition-all">
+            <i class="fas fa-arrow-left text-xl"></i>
+        </a>
+        <h1 class="text-3xl font-black italic uppercase tracking-tighter">Add New <span class="text-orange-500">Laptop</span></h1>
+    </div>
+
+    <div class="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 shadow-2xl backdrop-blur-xl">
+        <form action="/admin/add_product" method="POST" enctype="multipart/form-data" class="space-y-6">
+            
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Laptop Name</label>
+                <input type="text" name="brand" required placeholder="e.g. MacBook Pro M3" 
+                       class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 mt-1 focus:border-orange-500 outline-none transition-all">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Price (₹)</label>
+                    <input type="number" name="price" required placeholder="99000" 
+                           class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 mt-1 focus:border-orange-500 outline-none transition-all text-orange-500 font-bold">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Stock Quantity</label>
+                    <input type="number" name="stock" placeholder="10" 
+                           class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 mt-1 focus:border-orange-500 outline-none transition-all">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Short Description</label>
+                <textarea name="description" rows="3" placeholder="16GB RAM, 512GB SSD, Retina Display..." 
+                          class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 mt-1 focus:border-orange-500 outline-none transition-all"></textarea>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Product Image</label>
+                <div class="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-2xl p-6 hover:border-orange-500/50 transition-all bg-black/20 group">
+                    <input type="file" name="image" id="img_input" required class="hidden" accept="image/*" onchange="previewImage(event)">
+                    <label for="img_input" class="cursor-pointer text-center">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-600 group-hover:text-orange-500 mb-2 transition-all"></i>
+                        <p class="text-sm text-gray-500" id="file_name">Click to upload image</p>
+                    </label>
+                    <img id="img_preview" class="hidden mt-4 rounded-xl max-h-40 border border-white/10 shadow-lg">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-4 rounded-2xl uppercase tracking-widest shadow-xl shadow-orange-900/20 transition-all transform hover:scale-[1.02]">
+                Save Laptop to Store
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        const preview = document.getElementById('img_preview');
+        const fileName = document.getElementById('file_name');
+        
+        reader.onload = function(){
+            preview.src = reader.result;
+            preview.classList.remove('hidden');
+            fileName.innerText = event.target.files[0].name;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+</body>
+</html>

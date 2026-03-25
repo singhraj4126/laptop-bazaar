@@ -1,0 +1,9 @@
+<h2>Available Laptops</h2>
+{% for l in laptops %}
+<hr>
+<b>{{l.brand}} {{l.model}}</b><br>
+Price: ₹{{l.price}}<br>
+Discount: ₹{{l.discount}}<br>
+Final Price: ₹{{l.price - l.discount}}<br>
+<a href="/order/{{l.id}}">Order Now</a>
+{% endfor %}

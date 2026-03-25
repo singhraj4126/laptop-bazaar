@@ -1,0 +1,171 @@
+ <nav class="glass fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 flex justify-between items-center shadow-2xl" 
+     style="background: rgba(15, 23, 42, 0.95) !important; width: 100% !important; height: 70px !important; margin: 0 !important; border-radius: 0 !important;">
+    
+    <div class="flex items-center gap-4">
+        <button id="drawer-open" class="text-white text-xl p-2 hover:text-orange-500 transition">
+            <i class="fa fa-bars"></i>
+        </button>
+        
+        <a href="/" class="text-xl md:text-2xl font-bold tracking-tighter text-white" style="text-decoration: none !important;">
+            LAPTOP<span class="text-orange-500 font-black">BAZAAR</span>
+        </a>
+    </div>
+
+    <div class="hidden md:flex flex-1 max-w-xl mx-8 items-center group">
+        <form action="/search" method="GET" class="flex w-full">
+            <input type="text" name="query" placeholder="Search gear..." class="w-full bg-slate-800 text-white text-sm rounded-l-lg py-2.5 px-10 outline-none border border-white/10 focus:border-orange-500">
+            <button type="submit" class="bg-orange-500 px-6 rounded-r-lg hover:bg-orange-600 transition">
+                <i class="fa fa-search text-white"></i>
+            </button>
+        </form>
+    </div>
+
+   <div class="flex items-center gap-4 md:gap-6">
+    
+    {% if session.get('user_id') %}
+    <a href="/my_orders" class="relative text-white hover:text-orange-500 transition-all group flex flex-col items-center">
+        <i class="fas fa-history text-xl md:text-2xl"></i>
+        <span class="hidden md:block text-[10px] font-bold uppercase mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">Orders</span>
+    </a>
+    {% endif %}
+
+    <a href="/cart" class="relative text-white hover:text-orange-500 transition-colors">
+        <i class="fas fa-shopping-cart text-2xl"></i>
+        {% if session.get('cart_total', 0)|int > 0 %}
+            <span class="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-slate-900">
+                {{ session['cart_total'] }}
+            </span>
+        {% endif %}
+    </a>
+
+    <div class="hidden md:flex items-center gap-2 border-l border-white/10 pl-4">
+        </div>
+</div>
+
+        
+
+        <div class="hidden md:flex items-center gap-2 border-l border-white/10 pl-4">
+            {% if session.get('user_id') %}
+                <i class="fas fa-user-circle text-gray-400 text-xl"></i>
+                <span class="text-white font-medium text-sm">
+                    Hi, <span class="text-orange-400 capitalize">{{ session.get('user_name', 'User') }}</span>
+                </span>
+            {% else %}
+                <a href="/login" class="text-white hover:text-orange-500 text-sm font-bold uppercase tracking-widest">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div id="mobile-drawer" class="fixed inset-0 z-[150] bg-black/60 backdrop-blur-sm hidden transition-opacity">
+    <div class="w-72 h-full bg-[#0f172a] shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto" id="drawer-content">
+        
+        <div class="p-6 bg-gradient-to-r from-blue-600 to-orange-600 flex items-center justify-between shadow-lg">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-user-circle text-white text-3xl"></i>
+                <span class="text-white font-bold text-lg capitalize">Hi, {{ session.get('user_name','User') }}</span>
+            </div>
+            <button id="drawer-close" class="text-white text-2xl font-light hover:rotate-90 transition-transform">&times;</button>
+        </div>
+        
+        <div class="p-4 space-y-1">
+            <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest px-4 mt-4 mb-2">Trending</p>
+            <a href="/" class="flex items-center gap-4 px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition">
+                <i class="fa fa-fire text-orange-500"></i> <span class="text-sm font-medium">Bestsellers</span>
+            </a>
+            <a href="/" class="flex items-center gap-4 px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition">
+                <i class="fa fa-rocket text-blue-500"></i> <span class="text-sm font-medium">New Releases</span>
+            </a>
+
+            <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest px-4 mt-6 mb-2">Categories</p>
+            <a href="/" class="flex items-center gap-4 px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition">
+                <i class="fa fa-gamepad text-purple-500"></i> <span class="text-sm font-medium">Gaming Laptops</span>
+            </a>
+            <a href="/" class="flex items-center gap-4 px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition">
+                <i class="fab fa-apple text-gray-400"></i> <span class="text-sm font-medium">MacBooks</span>
+            </a>
+            <a href="/" class="flex items-center gap-4 px-4 py-3 text-gray-300 hover:bg-white/5 hover:text-white rounded-xl transition">
+                <i class="fa fa-briefcase text-yellow-500"></i> <span class="text-sm font-medium">Business</span>
+            </a>
+
+            <div class="border-t border-white/5 mt-6 pt-4 px-4">
+    <p class="text-gray-400 italic text-sm mb-4">Customer Service</p>
+    
+    <a href="/my_orders" class="flex items-center gap-4 py-3 text-gray-300 hover:text-white transition group">
+        <i class="fa fa-history text-green-500 group-hover:scale-110 transition"></i> 
+        <span class="text-sm font-medium">My Orders</span>
+    </a>
+
+    <a href="/profile" class="flex items-center gap-4 py-3 text-gray-300 hover:text-white transition group">
+        <i class="fa fa-user-cog text-blue-400 group-hover:scale-110 transition"></i> 
+        <span class="text-sm font-medium">Your Account</span>
+    </a>
+
+    <div class="h-px bg-white/5 my-4"></div>
+
+    {% if session.get('user_id') %}
+        <a href="/logout" class="text-orange-500 font-bold hover:text-orange-400 transition flex items-center gap-2">
+            <i class="fa fa-sign-out-alt"></i> Sign Out
+        </a>
+    {% else %}
+        <a href="/login" class="text-orange-500 font-bold hover:text-orange-400 transition">Sign In</a>
+    {% endif %}
+</div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { padding-top: 70px !important; }
+    .animate-bounce-in { animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    @keyframes bounceIn {
+        0% { transform: translate(-50%, 100px); opacity: 0; }
+        100% { transform: translate(-50%, 0); opacity: 1; }
+    }
+    .toast-pill { border: 2px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const drawerOpen = document.getElementById('drawer-open');
+        const drawerClose = document.getElementById('drawer-close');
+        const drawer = document.getElementById('mobile-drawer');
+        const drawerContent = document.getElementById('drawer-content');
+
+        if (drawerOpen && drawer) {
+            drawerOpen.onclick = () => {
+                drawer.classList.remove('hidden');
+                setTimeout(() => drawerContent.style.transform = 'translateX(0)', 10);
+            };
+            const closeAction = () => {
+                drawerContent.style.transform = 'translateX(-100%)';
+                setTimeout(() => drawer.classList.add('hidden'), 300);
+            };
+            drawerClose.onclick = closeAction;
+            drawer.onclick = (e) => { if(e.target === drawer) closeAction(); };
+        }
+
+        const toast = document.getElementById('toast-container');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.transition = 'all 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 50px)';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+    });
+</script>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div id="toast-container" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200]">
+      {% for message in messages %}
+        <div class="toast-pill px-6 py-3 rounded-full bg-orange-600 text-white font-bold shadow-2xl flex items-center gap-3 animate-bounce-in mb-2">
+            <i class="fa fa-info-circle"></i>
+            <span>{{ message }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
