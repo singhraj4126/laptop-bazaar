@@ -4,3 +4,4 @@ pymysql
 python-dotenv
 gunicorn
 Werkzeug
+flask_mysqldb
