@@ -1,5 +1,6 @@
-Flask
-Flask-SQLAlchemy
-PyMySQL
+flask
+flask_sqlalchemy
+pymysql
+python-dotenv
 gunicorn
 Werkzeug
