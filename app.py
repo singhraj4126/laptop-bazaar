@@ -26,9 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-with app.app_context():
-    db.create_all()
-    print("Database Tables Created Successfully!")
+
 # ---------------------------------------------------------
 # DATABASE MODELS (Sahi Names ke Saath)
 # ---------------------------------------------------------
@@ -51,6 +49,10 @@ class Product(db.Model):
     image_url = db.Column(db.String(500))
     specs = db.Column(db.Text)      # Jo pehle missing tha
     discount = db.Column(db.Integer, default=0)
+
+with app.app_context():
+    db.create_all()
+    print("Database Tables Created Successfully!")
 
 # ---------------------------------------------------------
 # ROUTES
