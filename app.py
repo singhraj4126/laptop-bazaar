@@ -31,6 +31,7 @@ db = SQLAlchemy(app)
 # DATABASE MODELS (Sahi Names ke Saath)
 # ---------------------------------------------------------
 
+# 1. UPDATED USER MODEL (Naye columns ke saath)
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +40,12 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default='users')
     rating = db.Column(db.Float, default=4.0)
-
+    # Ye columns checkout ke liye zaroori hain
+    full_name = db.Column(db.String(100))
+    phone = db.Column(db.String(15))
+    address = db.Column(db.Text)
+    city = db.Column(db.String(50))
+    pincode = db.Column(db.String(10))
 class Product(db.Model):
     __tablename__ = 'laptop' # SQL table 'laptop' se connect karega
     id = db.Column(db.Integer, primary_key=True)
@@ -60,7 +66,43 @@ with app.app_context():
 
 @app.route('/setup')
 def setup():
+    from sqlalchemy import text
+    # 1. Sabse pehle sari missing tables manually banao
+    try:
+        # Cart table agar nahi hai toh banao
+        db.session.execute(text("""
+            CREATE TABLE IF NOT EXISTS cart (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                user_id INTEGER, 
+                laptop_id INTEGER, 
+                quantity INTEGER DEFAULT 1
+            )
+        """))
+        
+        # Orders table agar nahi hai toh banao
+        db.session.execute(text("""
+            CREATE TABLE IF NOT EXISTS orders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                user_id INTEGER, 
+                full_name TEXT, 
+                phone TEXT, 
+                address TEXT, 
+                city TEXT, 
+                pincode TEXT, 
+                total_amount REAL, 
+                status TEXT DEFAULT 'Pending', 
+                payment_mode TEXT DEFAULT 'COD', 
+                order_date DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """))
+        db.session.commit()
+    except Exception as e:
+        print(f"Table Creation Error: {e}")
+
+    # 2. Phir models waali tables banao (User, Product)
     db.create_all()
+
+    # 3. Laptops insert karo
     if Product.query.count() == 0:
         laptops_data = [
             {"name": "MacBook Air M2", "brand": "Apple", "price": 114900, "specs": "8GB RAM, 256GB SSD, 13.6-inch Liquid Retina", "img": "https://m.media-amazon.com/images/I/71f5Eu5lJSL._SL1500_.jpg"},
@@ -84,8 +126,8 @@ def setup():
             p = Product(name=item['name'], brand=item['brand'], price=item['price'], specs=item['specs'], image_url=item['img'])
             db.session.add(p)
         db.session.commit()
-        return "Setup Success! 15+ Laptops Added."
-    return "Data already exists."
+        return "Setup Success! All tables created and laptops added."
+    return "Data already exists and tables are ensured."
 
 @app.route('/')
 def index():
