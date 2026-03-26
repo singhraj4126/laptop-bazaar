@@ -67,9 +67,12 @@ with app.app_context():
 @app.route('/setup')
 def setup():
     from sqlalchemy import text
-    # 1. Sabse pehle sari missing tables manually banao
     try:
-        # Cart table agar nahi hai toh banao
+        # Step 1: Forcefully create all models (User, Product)
+        db.create_all()
+        
+        # Step 2: Ensure Raw SQL tables exist (Cart & Orders)
+        # SQLite mein 'AUTOINCREMENT' aise hi likha jata hai
         db.session.execute(text("""
             CREATE TABLE IF NOT EXISTS cart (
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -79,32 +82,20 @@ def setup():
             )
         """))
         
-        # Orders table agar nahi hai toh banao
         db.session.execute(text("""
             CREATE TABLE IF NOT EXISTS orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 user_id INTEGER, 
-                full_name TEXT, 
-                phone TEXT, 
-                address TEXT, 
-                city TEXT, 
-                pincode TEXT, 
-                total_amount REAL, 
-                status TEXT DEFAULT 'Pending', 
-                payment_mode TEXT DEFAULT 'COD', 
-                order_date DATETIME DEFAULT CURRENT_TIMESTAMP
+                full_name TEXT, phone TEXT, address TEXT, city TEXT, pincode TEXT, 
+                total_amount REAL, status TEXT DEFAULT 'Pending', 
+                payment_mode TEXT DEFAULT 'COD', order_date DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """))
         db.session.commit()
-    except Exception as e:
-        print(f"Table Creation Error: {e}")
 
-    # 2. Phir models waali tables banao (User, Product)
-    db.create_all()
-
-    # 3. Laptops insert karo
-    if Product.query.count() == 0:
-        laptops_data = [
+        # Step 3: Only add laptops if the table is empty
+        if Product.query.count() == 0:
+            laptops_data = [
             {"name": "MacBook Air M2", "brand": "Apple", "price": 114900, "specs": "8GB RAM, 256GB SSD, 13.6-inch Liquid Retina", "img": "https://m.media-amazon.com/images/I/71f5Eu5lJSL._SL1500_.jpg"},
             {"name": "MacBook Pro M3", "brand": "Apple", "price": 169900, "specs": "16GB RAM, 512GB SSD, 14-inch XDR Display", "img": "https://m.media-amazon.com/images/I/6168-3Yv7eL._SL1500_.jpg"},
             {"name": "Dell XPS 13", "brand": "Dell", "price": 125000, "specs": "i7 12th Gen, 16GB RAM, 512GB SSD", "img": "https://m.media-amazon.com/images/I/71jG+e7roXL._SL1500_.jpg"},
@@ -121,13 +112,16 @@ def setup():
             {"name": "Razer Blade 15", "brand": "Razer", "price": 245000, "specs": "i9, RTX 4080, CNC Aluminum Body", "img": "https://m.media-amazon.com/images/I/71S-S9I9-dL._SL1500_.jpg"},
             {"name": "Infinix Zero Book", "brand": "Infinix", "price": 52000, "specs": "i9 12th Gen, 16GB RAM, Budget King", "img": "https://m.media-amazon.com/images/I/61IunqD7x8L._SL1500_.jpg"}
         ]
+            for item in laptops_data:
+                p = Product(name=item['name'], brand=item['brand'], price=item['price'], specs=item['specs'], image_url=item['img'])
+                db.session.add(p)
+            db.session.commit()
+            return "✅ Database Initialized! Tables created & Laptops added."
         
-        for item in laptops_data:
-            p = Product(name=item['name'], brand=item['brand'], price=item['price'], specs=item['specs'], image_url=item['img'])
-            db.session.add(p)
-        db.session.commit()
-        return "Setup Success! All tables created and laptops added."
-    return "Data already exists and tables are ensured."
+        return "ℹ️ Database already exists. No changes made."
+    except Exception as e:
+        db.session.rollback()
+        return f"❌ Setup Failed: {e}"
 
 @app.route('/')
 def index():
