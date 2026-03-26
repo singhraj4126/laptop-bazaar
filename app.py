@@ -148,7 +148,7 @@ def login():
         from werkzeug.security import check_password_hash
         
         # User ko email se dhoondhein
-        query = text("SELECT * FROM user WHERE email = :email")
+        query = text("SELECT * FROM users WHERE email = :email")
         result = db.session.execute(query, {'email': email}).mappings().first()
         
         if result:
@@ -331,7 +331,7 @@ def checkout():
         return redirect(url_for('index'))
     
     # 2. User ki saved details nikaalo (Auto-fill ke liye)
-    user_query = text("SELECT full_name, phone, address, city, pincode FROM user WHERE id = :u")
+    user_query = text("SELECT full_name, phone, address, city, pincode FROM users WHERE id = :u")
     user_data = db.session.execute(user_query, {'u': user_id}).fetchone()
     
     return render_template('checkout.html', user=user_data, total_price=total_price)
@@ -368,7 +368,7 @@ def place_order():
     try:
         # A. Sabse pehle User Table UPDATE karo (Agli baar ke liye details save ho gayi)
         update_user = text("""
-            UPDATE user SET full_name=:n, phone=:p, address=:a, city=:c, pincode=:pin 
+            UPDATE users SET full_name=:n, phone=:p, address=:a, city=:c, pincode=:pin 
             WHERE id=:u
         """)
         db.session.execute(update_user, {
@@ -440,7 +440,7 @@ def admin_dashboard():
     from sqlalchemy import text
     # Statistics nikaalo
     total_orders = db.session.execute(text("SELECT COUNT(*) FROM orders")).scalar()
-    total_users = db.session.execute(text("SELECT COUNT(*) FROM user WHERE role='user'")).scalar()
+    total_users = db.session.execute(text("SELECT COUNT(*) FROM users WHERE role='users'")).scalar()
     total_sales = db.session.execute(text("SELECT SUM(total_amount) FROM orders")).scalar() or 0
     
     # Latest Orders list
