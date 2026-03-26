@@ -200,19 +200,26 @@ def login():
                     is_valid = True
 
             if is_valid:
+                # ✅ LOGIN SUCCESS
                 session['user_id'] = result['id']
                 session['user_name'] = result['username']
                 
-                # ⭐ SABSE ZAROORI LINE: Role ko session mein daalo
-                session['role'] = result['role'] 
-                
-                flash("Login Successful!")
-                print(f"DEBUG: Login Success. Role: {session['role']}, redirecting...")
-                return redirect(url_for('index'))
+                if email == 'admin@gmail.com':
+                    session['role'] = 'admin'
+                    flash("Welcome Admin!", "success")
+                    return redirect(url_for('admin_dashboard'))
+                else:
+                    session['role'] = result['role'] or 'users'
+                    flash("Login Successful!", "success")
+                    return redirect(url_for('index'))
             else:
-                flash("Wrong Password!")
+                # ❌ WRONG PASSWORD
+                flash("Invalid Password! Please try again.", "danger")
+                return redirect(url_for('login'))
         else:
-            flash("User not found!")
+            # ❌ USER NOT FOUND
+            flash("No account found with this email!", "warning")
+            return redirect(url_for('login'))
             
     return render_template('login.html')
 @app.route('/logout')
