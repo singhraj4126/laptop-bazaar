@@ -567,6 +567,20 @@ def add_product():
             flash(f"Error saving to database: {e}")
             
     return render_template('admin/add_product.html')
+
+@app.route('/account')
+def account():
+    if 'user_id' not in session:
+        flash("Please login to view your account.")
+        return redirect(url_for('login'))
+    
+    from sqlalchemy import text
+    user_id = session['user_id']
+    # User ki details nikaalo (Profile dikhane ke liye)
+    user_data = db.session.execute(text("SELECT * FROM users WHERE id = :u"), {'u': user_id}).mappings().first()
+    
+    return render_template('account.html', user=user_data)
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
